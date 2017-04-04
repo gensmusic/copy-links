@@ -16,3 +16,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+var LINKS = ['a', 'b', 'c']
+
+function copyToClipboard() {
+    var $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val(LINKS.join('\n')).select();
+    document.execCommand("copy");
+    $temp.remove();
+}
+
+$(document).ready(function(){
+    $('#copylinks').bind('click', function() {
+        copyToClipboard()
+    })
+
+});
