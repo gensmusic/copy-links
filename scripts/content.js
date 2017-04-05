@@ -13,8 +13,19 @@ function modifyAllDownloadLinks() {
         var that = $(this);
         var url = that.attr('href');
         if (isDownload(url)) {
-            console.log(url);
-            var btn = $("<input type='button' id='testBtn' value='+'>")
+            console.log(that.width());
+            var btn = $(`<i style="
+                position: relative;
+                font-size: 18px;
+                background: #F44336;
+                display: block;
+                width: 20px;
+                height: 20px;
+                top: -20px;
+                right: -1px;
+                border-radius: 50%;
+                z-index: 3000;
+            ">+</i>`)
             btn.bind('click', function(url) {
                 return function() {
                     console.log(url)
@@ -27,21 +38,21 @@ function modifyAllDownloadLinks() {
                     console.log(CHOSEN_LIST)
                 }
             }(url))
-            btn.css({
-                'backgroud-color': '#F44336',
-                width: '25px',
-                height: '25px',
-                'border-radius': '100%',
-                background: '#F44336',
-                border: 'none',
-                outline: 'none',
-                color: '#FFF',
-                'font-size': '23px',
-                // 'box-shadow': '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-                transition: '.3s',
-                position: 'relative',
-                'z-index': 3000
-            })
+            // btn.css({
+            //     'backgroud-color': '#F44336',
+            //     width: '25px',
+            //     height: '25px',
+            //     'border-radius': '100%',
+            //     background: '#F44336',
+            //     border: 'none',
+            //     outline: 'none',
+            //     color: '#FFF',
+            //     'font-size': '23px',
+            //     // 'box-shadow': '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
+            //     transition: '.3s',
+            //     position: 'relative',
+            //     'z-index': 3000
+            // })
             that.append(btn)
         }
     });
