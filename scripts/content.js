@@ -8,52 +8,55 @@ function isDownload(url) {
 
 var CHOSEN_LIST = [];
 
+function insertScreen() {
+    let docWidth = $(document).width();
+    let docHeight = $(document).height();
+    let d = $(`<div
+    class="screen"
+    style="
+        position: absolute;
+        width: ${docWidth}px;
+        height: ${docHeight}px;
+        margin: 0px;
+        top: 0px;
+        left: 0px;
+        z-index: 3000;
+    "></div>`)
+    $('body').append(d);
+}
+
 function modifyAllDownloadLinks() {
+    let screen = $('.screen');
+    let screenTop = screen.offset().top;
+    let screenLeft = screen.offset().left;
     $('a').each(function() {
-        var that = $(this);
-        var url = that.attr('href');
+        let that = $(this);
+        let url = that.attr('href');
         if (isDownload(url)) {
-            console.log(that.width());
-            var btn = $(`<i style="
-                position: relative;
+            let btn = $(`<i style="
+                position: absolute;
                 font-size: 18px;
+                color: '#FFF';
+                border: none;
                 background: #F44336;
                 display: block;
                 width: 20px;
                 height: 20px;
-                top: -20px;
-                right: -1px;
+                top: ${that.offset().top - screenTop}px;
+                left: ${that.offset().left - screenLeft}px;
                 border-radius: 50%;
                 z-index: 3000;
             ">+</i>`)
-            btn.bind('click', function(url) {
-                return function() {
-                    console.log(url)
-                    if (CHOSEN_LIST.indexOf(url) === -1) {
-                        console.log(`add url to list: ${url}`)
-                        CHOSEN_LIST.push(url);
-                    } else {
-                        console.log(`already has this url: ${url}`)
-                    }
-                    console.log(CHOSEN_LIST)
+            btn.bind('click', function() {
+                if (CHOSEN_LIST.indexOf(url) === -1) {
+                    console.log(`add url to list: ${url}`)
+                    CHOSEN_LIST.push(url);
+                } else {
+                    console.log(`already has this url: ${url}`)
                 }
-            }(url))
-            // btn.css({
-            //     'backgroud-color': '#F44336',
-            //     width: '25px',
-            //     height: '25px',
-            //     'border-radius': '100%',
-            //     background: '#F44336',
-            //     border: 'none',
-            //     outline: 'none',
-            //     color: '#FFF',
-            //     'font-size': '23px',
-            //     // 'box-shadow': '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-            //     transition: '.3s',
-            //     position: 'relative',
-            //     'z-index': 3000
-            // })
-            that.append(btn)
+                console.log(CHOSEN_LIST)
+            });
+            screen.append(btn)
         }
     });
 }
@@ -69,5 +72,6 @@ chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
 
 $(document).ready(function(){
     console.log(`All is ready!!!!!!!!!!!!!!!!!!!!!`)
+    insertScreen();
     modifyAllDownloadLinks();
 });
