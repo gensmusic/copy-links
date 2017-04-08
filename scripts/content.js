@@ -7,63 +7,60 @@ function isDownload(url) {
 }
 
 let CHOSEN_LIST = new Set();
+let BUTTONS = new Map();
 
 function insertScreen() {
     let docWidth = $(document).width();
     let docHeight = $(document).height();
-    let d = $(`<div
-    class="screen"
-    style="
+    $(`<div class="screen" style="
         position: absolute;
         width: ${docWidth}px;
         height: ${docHeight}px;
         margin: 0px;
         top: 0px;
         left: 0px;
-        z-index: 3000;
-    "></div>`)
-    $('body').append(d);
-
+        z-index: 3000; "></div>`).appendTo('body');
     // add css
     $(`<style>
-    .copyLinksaddButton {
-        position: absolute;
-        background-color: #F44336;
-        width: 30px;
-        height: 30px;
-        border-radius: 100%;
-        background: #F44336;
-        border: none;
-        outline: none;
-        color: #FFF;
-        font-size: 20px;
-        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-        transition: .3s;
-        -webkit-tap-highlight-color: rgba(0,0,0,0);
-    }
-    .copyLinksaddButton:focus {
-        transform:scale(1.1);
-        transform:rotate(45deg);
-        -ms-transform: rotate(45deg);
-        -webkit-transform: rotate(45deg);
-    }
-    </style>`).appendTo('head')
+        .copyLinksaddButton {
+            position: absolute;
+            background-size: 100%;
+            background-repeat: no-repeat;
+            width: 30px;
+            height: 30px;
+            border-radius: 100%;
+            border: none;
+            outline: none;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+    </style>`).appendTo('head');
 }
 
 function newButton(top, left, url) {
-    let btn = $(`<buntton class="copyLinksaddButton">+</>`);
+    let btn = $(`<buntton downloadUrl="${url}" class="copyLinksaddButton"></>`);
     btn.css("top", `${top}px`);
     btn.css("left", `${left}px`);
+    let plusUrl = chrome.extension.getURL('images/plus.png');
+    let minusUrl = chrome.extension.getURL('images/minus.png');
+    btn.css('background-image', `url(${plusUrl})`);
 
     btn.bind('click', function() {
-        if (btn.text() == '+') {
+        let bg = $(this).css('background-image');
+        if (bg.indexOf(plusUrl) !== -1) {
+            $('.copyLinksaddButton').each(function() {
+                if ($(this).attr('downloadUrl') === url) {
+                    $(this).css('background-image', `url(${minusUrl})`);
+                }
+            })
             CHOSEN_LIST.add(url);
-            btn.text('-')
         } else {
+            $('.copyLinksaddButton').each(function() {
+                if ($(this).attr('downloadUrl') === url) {
+                    $(this).css('background-image', `url(${plusUrl})`);
+                }
+            })
             CHOSEN_LIST.delete(url);
-            btn.text('+')
         }
-        console.log(CHOSEN_LIST)
     });
     return btn;
 }
@@ -97,4 +94,6 @@ chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
 $(document).ready(function(){
     console.log(`All is ready!!!!!!!!!!!!!!!!!!!!!`)
 
+    let url = chrome.extension.getURL('icon.png')
+    console.log(url)
 });
