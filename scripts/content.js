@@ -7,7 +7,7 @@ function isDownload(url) {
 }
 
 let CHOSEN_LIST = new Set();
-let BUTTONS = new Map();
+let ALL_LINKS = new Set();
 
 function insertScreen() {
     let docWidth = $(document).width();
@@ -37,6 +37,7 @@ function insertScreen() {
 }
 
 function newButton(top, left, url) {
+    ALL_LINKS.add(url);
     let btn = $(`<buntton downloadUrl="${url}" class="copyLinksaddButton"></>`);
     btn.css("top", `${top}px`);
     btn.css("left", `${left}px`);
@@ -82,18 +83,24 @@ function modifyAllDownloadLinks() {
 }
 
 chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
-    console.log("something happening from the extension");
-    // var data = request.data || {};
-    var data = CHOSEN_LIST;
-    console.log(`data is ${JSON.stringify(data)}`)
-    insertScreen();
-    modifyAllDownloadLinks();
-    sendResponse({data: CHOSEN_LIST, success: true});
+    var event = request.data || {};
+    switch (event) {
+        case 'tagLinks':
+            insertScreen();
+            modifyAllDownloadLinks();
+            sendResponse({data: Array.from(ALL_LINKS), success: true});
+            break;
+        case 'copyLinks':
+            sendResponse({data: Array.from(CHOSEN_LIST), success: true})
+            break;
+        case 'cleanLinks':
+            break;
+        default:
+            console.log(`Unknown event: ${event}`);
+            break;
+    }
 });
 
 $(document).ready(function(){
     console.log(`All is ready!!!!!!!!!!!!!!!!!!!!!`)
-
-    let url = chrome.extension.getURL('icon.png')
-    console.log(url)
 });
