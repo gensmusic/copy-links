@@ -74,10 +74,18 @@ function modifyAllDownloadLinks() {
     $('a').each(function() {
         let that = $(this);
         let url = that.attr('href');
-        if (isDownload(url)) {
-            let top = that.offset().top - screenTop;
-            let left = that.offset().left - screenLeft;
-            screen.append(newButton(top, left, url))
+        // 遍历所有自定义属性
+        for (let i in this.attributes) {
+            let v = this.attributes[i];
+            if (v && v["nodeName"] && v["nodeValue"]) {
+                let url = v["nodeValue"];
+                if (isDownload(url)) {
+                    let top = that.offset().top - screenTop;
+                    let left = that.offset().left - screenLeft;
+                    screen.append(newButton(top, left, url));
+                    break;
+                }
+            }
         }
     });
 }
